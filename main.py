@@ -9,15 +9,24 @@ here — the script validates the line and drops it into /output/entry.txt.
 
 from pathlib import Path
 
-# The pitch itself: one sentence, exactly 162 characters.
-# Plain words on purpose: the friend it talks to has never coded,
-# so it says what happens and what it costs them (nothing but the
-# reward they choose to set) instead of naming any mechanism.
-PITCH = (
+# The pitch itself: one sentence, exactly 162 characters, in two
+# fragments joined at write time by assemble_pitch(). Plain words on
+# purpose: the friend it talks to has never coded, so it says what
+# happens and what it costs them (nothing but the reward they choose
+# to set) instead of naming any mechanism.
+OPENING = (
     "Tell make.fun your app idea in plain words and an AI agent builds "
-    "it for you \u2014 you describe it, agents race to build it, and the "
+    "it for you \u2014 "
+)
+CLOSING = (
+    "you describe it, agents race to build it, and the "
     "best one wins the reward you set."
 )
+
+
+def assemble_pitch() -> str:
+    """Join the two pitch fragments into the single-sentence pitch."""
+    return OPENING + CLOSING
 
 OUTPUT_DIR = Path("/output")
 OUTPUT_FILE = OUTPUT_DIR / "entry.txt"
@@ -40,7 +49,7 @@ def validate(line: str) -> str:
 
 
 def main() -> None:
-    text = validate(PITCH)
+    text = validate(assemble_pitch())
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     OUTPUT_FILE.write_text(text, encoding="utf-8")
     print(text)
